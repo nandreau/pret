@@ -7,11 +7,13 @@ public class Motif {
     private long id;
     private String nom;
     private String description;
+    private double coefficient;
 
-    public Motif(String nom, String description) {
+    public Motif(String nom, String description, double coefficient) {
         this.id = ++compteur;
         this.nom = nom;
         this.description = description;
+        this.coefficient = coefficient;
     }
 
     public long getId() {
@@ -28,6 +30,10 @@ public class Motif {
 
     public String getDescription() {
         return description;
+    }
+
+    public double getCoefficient() {
+        return coefficient;
     }
 
     public void setDescription(String description) {

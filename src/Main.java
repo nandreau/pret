@@ -1,16 +1,22 @@
-import business.Taux;
 import service.ClientService;
+import service.DureeService;
+import service.MotifService;
 import service.TauxService;
 import service.impl.ClientServiceImpl;
+import service.impl.DureeServiceImpl;
+import service.impl.MotifServiceImpl;
 import service.impl.TauxServiceImpl;
-
 import java.time.LocalDate;
 import java.util.Scanner;
+
 
 public class Main {
 	static Scanner sc = new Scanner(System.in);
     private static final ClientService clientService = new ClientServiceImpl();
     private static final TauxService tauxService = new TauxServiceImpl();
+    private static final DureeService dureeService = new DureeServiceImpl();
+    private static final MotifService motifService = new MotifServiceImpl();
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -51,13 +57,22 @@ public class Main {
     private static void ajouterJoueur(){
     	Scanner sc = new Scanner(System.in);
     	System.out.println("Vous avez selectionnés : 4. Ajouter un prêt");
+        ajouterJoueurs();
+        ajouterTaux();
+    }
+
+    private static void ajouterJoueurs(){
         clientService.ajouterClient("Alex","pont");
         clientService.ajouterClient("jean","penot");
         clientService.ajouterClient("Alexis","Barrier");
         clientService.ajouterClient("Romain","Gojart");
         clientService.ajouterClient("Maxime","Compte");
+        afficherJoueur();
+    }
+
+    private static void afficherJoueur(){
         clientService.recupererClients().forEach(
-                client -> System.out.println(client.getId()+". "+client.getPrenom()+" "+client.getNom())
+            client -> System.out.println(client.getId()+". "+client.getPrenom()+" "+client.getNom())
         );
     	System.out.println("Veuillez saisir l'id du client concerné :");
         int choice = sc.nextInt();
@@ -89,9 +104,32 @@ public class Main {
     }
 
     private static void ajouterTaux(){
-        tauxService.ajouterTaux(1.0,12,"moto","véhicule a deux roues");
-        /**clientService.recupererClients().forEach(
-                client -> System.out.println(client.getId()+". "+client.getPrenom()+" "+client.getNom())
-        );**/
+        dureeService.ajouterDuree(12);
+        dureeService.ajouterDuree(24);
+
+        motifService.ajouterMotif("moto","vehicule à deux roues",0.8);
+        motifService.ajouterMotif("auto","vehicule à quatres roues",1);
+        motifService.ajouterMotif("velo electrique","moyen de déplacement à deux roues écologique",0.3);
+
+        motifService.recupererMotifs().forEach(
+            motif ->{
+                dureeService.recupererDurees().forEach(
+                    duree ->{
+                        tauxService.ajouterTaux(motif.getCoefficient(),motif.getId(),duree.getId());
+                    }
+                );
+            }
+        );
+        afficherTaux();
+    }
+
+    private static void afficherTaux(){
+        tauxService.recupererTaux().forEach(
+                taux ->{
+                    int dureeEnMois = dureeService.getDureeEnMois(taux.getIdDuree());
+                    double calculTaux = (double)Math.round(motifService.getCoefficient(taux.getIdMotif()) * (dureeEnMois/12)*10)/10;
+                    System.out.println(taux.getId()+". "+calculTaux+"% sur "+dureeEnMois+" mois pour "+motifService.getNom(taux.getIdMotif()));
+                }
+        );
     }
 }

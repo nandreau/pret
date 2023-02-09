@@ -11,9 +11,14 @@ public class TauxServiceImpl implements TauxService {
     private static List<Taux> tauxList = new ArrayList<>();
 
     @Override
-    public Taux ajouterTaux(Double valeur, int dureeEnMois, String nom, String description) {
-        Taux taux = new Taux(valeur, dureeEnMois, nom, description);
+    public Taux ajouterTaux(Double valeur, long idMotif, long idDuree) {
+        Taux taux = new Taux(valeur, idMotif, idDuree);
         tauxList.add(taux);
         return taux;
+    }
+
+    @Override
+    public List<Taux> recupererTaux() {
+        return tauxList;
     }
 }
