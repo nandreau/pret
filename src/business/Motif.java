@@ -3,7 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Motif {
-    private static long compteur = 0;
+    private static long compteur = 0L;
     private long id;
     private String nom;
     private String description;

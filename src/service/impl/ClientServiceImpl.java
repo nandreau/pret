@@ -8,7 +8,6 @@ import java.util.List;
 import service.ClientService;
 
 public class ClientServiceImpl implements ClientService {
-
     private static List<Client> clients = new ArrayList<>();
 
     @Override
@@ -23,4 +22,5 @@ public class ClientServiceImpl implements ClientService {
     public List<Client> recupererClients() {
         return clients;
     }
+
 }

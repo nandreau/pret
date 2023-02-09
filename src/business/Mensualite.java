@@ -1,7 +1,7 @@
 package business;
 import java.time.LocalDate;
 public class Mensualite {
-    private static long compteur = 0;
+    private static long compteur = 0L;
     private long id;
     private LocalDate datePrelevement;
     private double partInteretsRembourses;

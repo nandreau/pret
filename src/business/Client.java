@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Client {
-    private static long compteur = 0;
+    private static long compteur = 0L;
     private ArrayList<Client> main;
     private long id;
     private String nom;

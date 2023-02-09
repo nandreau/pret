@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Pret {
-    private static long compteur = 0;
+    private static long compteur = 0L;
     private long id;
     private Double montantDemande;
     private Double montantMensualite;
