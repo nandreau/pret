@@ -10,5 +10,8 @@ public interface DureeService {
 
     List<Duree> recupererDurees();
 
+    int getDureeListLenght();
+
     int getDureeEnMois(long id);
+
 }

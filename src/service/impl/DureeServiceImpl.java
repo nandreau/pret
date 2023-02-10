@@ -1,25 +1,38 @@
 package service.impl;
 
 import business.Duree;
-import business.Motif;
 import service.DureeService;
+import service.MotifService;
+import service.TauxService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DureeServiceImpl implements DureeService {
     private static List<Duree> dureeList = new ArrayList<>();
+    private static final MotifService motifService = new MotifServiceImpl();
+    private static final TauxService tauxService = new TauxServiceImpl();
 
     @Override
     public Duree ajouterDuree(int dureeEnMois) {
         Duree duree = new Duree(dureeEnMois);
         dureeList.add(duree);
+        if (motifService.getMotifListLenght() > 0){
+            motifService.recupererMotifs().forEach(
+                motif -> tauxService.ajouterTaux(motif.getCoefficient(),motif.getId(),duree.getId())
+            );
+        }
         return duree;
     }
 
     @Override
     public List<Duree> recupererDurees() {
         return dureeList;
+    }
+
+    @Override
+    public int getDureeListLenght() {
+        return dureeList.size();
     }
 
     /**

@@ -21,6 +21,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
+            ajouterTaux();
           System.out.println("Bienvenue sur prêt à la consommation");
           System.out.println("1. Voir tous les prêts triées par montant (du plus élevé au plus petit)");
           System.out.println("2. Voir tous les prêts triées par taux (du plus élevé au plus petit)");
@@ -44,7 +45,7 @@ public class Main {
               // Code pour ajouter un prêt
                 ajouterJoueur();
                 ajouterTaux();
-  			  
+
             case 5:
               System.exit(0);
             default:
@@ -111,17 +112,12 @@ public class Main {
         motifService.ajouterMotif("auto","vehicule à quatres roues",1);
         motifService.ajouterMotif("velo electrique","moyen de déplacement à deux roues écologique",0.3);
 
-        motifService.recupererMotifs().forEach(
-            motif ->{
-                dureeService.recupererDurees().forEach(
-                    duree ->{
-                        tauxService.ajouterTaux(motif.getCoefficient(),motif.getId(),duree.getId());
-                    }
-                );
-            }
-        );
+        dureeService.ajouterDuree(36);
+
         afficherTaux();
     }
+
+
 
     private static void afficherTaux(){
         tauxService.recupererTaux().forEach(
