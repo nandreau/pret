@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,10 +44,26 @@ public class Main {
               // Code pour afficher la liste des prêts entre deux dates
               break;
             case 4:
-              // Code pour ajouter un prêt
+              // Code pour ajouter une prêt
                 initPret();
             case 5:
-              System.exit(0);
+              // Code pour ajouter une durée
+            	  System.out.println("Vous avez sélectionné : 5. Ajouter une durée");
+            	  System.out.println("Veuillez saisir la durée souhaitée :");
+            	  int duree = sc.nextInt();
+            	  dureeService.ajouterDuree(duree);
+            	  System.out.println("La durée a été ajoutée avec succès");
+              break;
+            case 6:
+              // Code pour ajouter un motif
+            	  System.out.println("Vous avez sélectionné : 6. Ajouter un motif");
+            	  System.out.println("Veuillez saisir le motif souhaité :");
+            	  String motif = sc.nextLine();
+            	  motifService.ajouterMotif(motif, motif, 0);
+            	  System.out.println("Le motif a été ajouté avec succès");            	
+              break;
+            case 7:
+              System.exit(0);            	
             default:
               System.out.println("Choix non valide. Veuillez réessayer.");
           }
@@ -59,7 +76,9 @@ public class Main {
         System.out.println("2. Voir tous les prêts triées par taux (du plus élevé au plus petit)");
         System.out.println("3. Voir la liste des prêts qui débutent entre deux dates données");
         System.out.println("4. Ajouter un prêt");
-        System.out.println("5. Quitter");
+        System.out.println("5. Ajouter une durée");
+        System.out.println("6. Ajouter un motif");
+        System.out.println("7. Quitter");
         System.out.println("Faîtes votre choix :");
     }
 
@@ -81,6 +100,10 @@ public class Main {
 
     }
 
+    private static void ajouterMotif(ArrayList<String> listeMotifs, String motif) {
+        listeMotifs.add(motif);
+    }
+    
     private static void ajouterJoueurs(){
         clientService.ajouterClient("Alex","pont");
         clientService.ajouterClient("jean","penot");
@@ -116,7 +139,10 @@ public class Main {
 
         dureeService.ajouterDuree(36);
     }
-
+    
+    private static void ajouterDuree(ArrayList<Integer> listeDurees, int duree) {
+        listeDurees.add(duree);
+    }
     private static long afficherEtSelectTaux(){
         List<Taux> tauxList = tauxService.recupererTaux();
         tauxList.sort((t1, t2) -> motifService.getNom(t1.getIdMotif()).compareTo(motifService.getNom(t2.getIdMotif())));
