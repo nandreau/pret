@@ -81,11 +81,11 @@ public class Pret {
         this.idClient = idClient;
     }
 
-    public long getTauxInteret() {
+    public long getIdTaux() {
         return idTaux;
     }
 
-    public void setTauxInteret(long idTaux) {
+    public void getIdTaux(long idTaux) {
         this.idTaux = idTaux;
     }
 }

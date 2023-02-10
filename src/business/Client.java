@@ -11,18 +11,10 @@ public class Client {
     private String prenom;
     private Pret pret;
 
-    public Client() {
-        main = new ArrayList<>();
-        id = ++compteur;
-    }
-
-    public Client(String nom) {
-        this();
-        this.nom = nom;
-    }
-    public Client(String nom, String prenom) {
-        this(nom);
+    public Client(String prenom, String nom) {
+        this.id = ++compteur;
         this.prenom = prenom;
+        this.nom = nom;
     }
 
     public long getId() {

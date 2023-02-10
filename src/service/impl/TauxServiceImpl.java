@@ -21,4 +21,18 @@ public class TauxServiceImpl implements TauxService {
     public List<Taux> recupererTaux() {
         return tauxList;
     }
+
+    /**
+     * On créé une fonction pour retourner la valeur du taux avec son id
+     * De plus on ne va pas parcour la liste mais on va utiliser des méthodes de flux
+     * pour parcourir la liste, ce qui peut être plus efficace que de parcourir la liste manuellement.
+     */
+    @Override
+    public double recupererTauxValeurparId(long idTaux) {
+        return tauxList.stream()
+            .filter(taux -> taux.getId() == idTaux)
+            .map(Taux::getValeur)
+            .findFirst()
+            .orElse(Double.valueOf(-1));
+    }
 }

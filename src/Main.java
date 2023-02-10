@@ -1,6 +1,9 @@
 import business.Client;
+import business.Mensualite;
 import business.Pret;
 import business.Taux;
+import exceptions.DureeExcessiveException;
+import exceptions.MontantExcessifException;
 import service.*;
 import service.impl.*;
 import util.CalculMensualite;
@@ -50,12 +53,15 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Code pour afficher les prêts triées par montant
+                    afficherPretTrierParMontant();
                     break;
                 case 2:
                     // Code pour afficher les prêts triées par taux
+                    afficherPretTrierParTaux();
                     break;
                 case 3:
                     // Code pour afficher la liste des prêts entre deux dates
+                    initIntervallePrets();
                     break;
                 case 4:
                     // Code pour ajouter un prêt
@@ -138,7 +144,6 @@ public class Main {
 
         double montantMensualite = calculMensualite.getCalculMensualite(montantDemande,tauxAnnuel.getValeur(),dureeService.getDureeEnMois(tauxAnnuel.getIdDuree()));
         Pret pretCree = pretService.ajouterPret(montantDemande, montantMensualite, dateSouscription, dateEffet, "", dureeService.getDureeEnMois(tauxAnnuel.getIdDuree()),tauxAnnuel.getValeur(), client.getId(),tauxAnnuel.getId());
-
         System.out.println("Voici les détails du prêt : id : "+pretCree.getId()+", client : "+client.getPrenom()+" "+client.getNom() +", montant emprunté : "+pretCree.getMontantDemande()+", mensualité : "+pretCree.getMontantMensualite());
         printArrayRemboursement(pretCree.getId());
 
@@ -174,7 +179,8 @@ public class Main {
         }
     }
     private static void ajouterPret(){
-
+        pretService.ajouterPret(1000.0,83.69, LocalDateTime.parse("2023-02-11T00:24:45.018795500"), LocalDate.parse("2023-10-01"),"",12,0.8,4,1);
+        pretService.ajouterPret(3000.0,250.41, LocalDateTime.parse("2023-02-11T00:32:22.154235700"), LocalDate.parse("2024-09-01"),"",12,0.3,1,3);
     }
     private static void ajouterTaux(){
         motifService.ajouterMotif("moto","vehicule à deux roues",0.8);
@@ -186,8 +192,12 @@ public class Main {
         dureeService.ajouterDuree(36);
     }
     
-    private static void ajouterDuree(ArrayList<Integer> listeDurees, int duree) {
-        listeDurees.add(duree);
+    private static void ajouterDuree(ArrayList<Integer> listeDurees, int duree) throws DureeExcessiveException {
+        if (duree > 0 && duree <= 120){
+            listeDurees.add(duree);
+        }else {
+            throw new DureeExcessiveException("Choix de la durée non valide. Veuillez saisir une durée supérieur à 0 et inférieur ou égal à 120");
+        }
     }
 
     private static Taux afficherEtSelectTaux(){
@@ -217,7 +227,6 @@ public class Main {
         while (true) {
             String dateStr = sc.nextLine();
             try {
-                // ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
                 LocalDate dateChoisi = LocalDate.parse("01/"+dateStr,
                         DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT)
                 );
@@ -233,31 +242,82 @@ public class Main {
             }
         }
     }
+    public static LocalDate selectDate() {
+        Scanner sc = new Scanner(System.in);
 
-    public static Double choisirMontant(){
         while (true) {
-                Double choixMontant = sc.nextDouble();
-            if (choixMontant > 0) {
+            String dateStr = sc.nextLine();
+            try {
+                return LocalDate.parse(dateStr,
+                        DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT)
+                );
+            } catch (DateTimeParseException e) {
+                System.out.println("Format de date non valide. Veuillez entrer une date au format MM/yyyy.");
+            }
+        }
+    }
+
+    public static double choisirMontant() throws MontantExcessifException{
+        while (true) {
+            Double choixMontant = sc.nextDouble();
+            if (choixMontant > 0 && choixMontant <= 20000) {
                 return choixMontant;
             } else {
-                System.out.println("Choix du montant non valide. Veuillez saisir un montant supérieur à 0.");
+                throw new MontantExcessifException("Choix du montant non valide. Veuillez saisir un montant supérieur à 0 et inférieur ou égal à 0");
             }
         }
     }
     public static void printArrayRemboursement(long pretId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
         System.out.println("Date            | Capital rembourse    | Part des interets");
         System.out.println("----------------+----------------------+--------------------");
-        AtomicReference<Double> CapitalRembourse= new AtomicReference<>((double) 0);
-        mensualiteService.recupererMensualitesById(pretId).forEach(
-                mensualite -> {
-                    CapitalRembourse.set((double)Math.round(CapitalRembourse.get() + mensualite.getPartInteretsRembourses()*100)/100);
+        double CapitalRembourse= 0;
+        for (Mensualite mensualite : mensualiteService.recupererMensualitesById(pretId)) {
+            CapitalRembourse=(double)Math.round(CapitalRembourse + mensualite.getPartInteretsRembourses()*100)/100;
+            System.out.println(String.format(
+                    "%-15s %-22s %-15s",
+                    mensualite.getDatePrelevement().format(formatter),
+                    "| "+CapitalRembourse,
+                    "| "+mensualite.getPartCapitalRembourse())
+            );
+        }
+    }
+
+    public static void afficherPretTrierParMontant(){
+        System.out.println("Date         | Montant Demande <-- | Montant Mensualite  | Taux     | Identite");
+        afficherTableauTaux(pretService.recupererPretsParMontant());
+    }
+
+    public static void afficherPretTrierParTaux(){
+        System.out.println("Date         | Montant Demande     | Montant Mensualite  | Taux <-- | Identite");
+        afficherTableauTaux(pretService.recupererPretsParTaux());
+    }
+
+    private static void initIntervallePrets(){
+        System.out.print("Veuillez saisir la date de début des prêts au format dd/MM/yyyy : ");
+        LocalDate dateDebut = selectDate();
+        System.out.print("Veuillez saisir la date de fin des prêts au format dd/MM/yyyy : ");
+        LocalDate dateFin = selectDate();
+        System.out.println("Date         | Montant Demande     | Montant Mensualite  | Taux    | Identite");
+        afficherTableauTaux(pretService.recupererPretsParIntervalle(dateDebut,dateFin));
+    }
+
+    public static void afficherTableauTaux(List<Pret> listePrets){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        System.out.println("-------------+-------------------- +---------------------+----------+--------------");
+        listePrets.forEach(
+                montant -> {
                     System.out.println(String.format(
-                            "%-15s %-22s %-15s",
-                            mensualite.getDatePrelevement(),
-                            "| "+CapitalRembourse,
-                            "| "+mensualite.getPartCapitalRembourse())
+                            "%-12s %-21s %-21s %-10s %-20s",
+                            montant.getDateEffet().format(formatter),
+                            "| "+montant.getMontantDemande(),
+                            "| "+montant.getMontantMensualite(),
+                            "| "+tauxService.recupererTauxValeurparId(montant.getIdTaux()),
+                            "| "+clientService.getNomEtPrenomClient(montant.getIdClient())
+                        )
                     );
                 }
         );
+        initChoix();
     }
 }
