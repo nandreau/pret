@@ -4,6 +4,7 @@ import business.Duree;
 import service.DureeService;
 import service.MotifService;
 import service.TauxService;
+import util.CalculTaux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class DureeServiceImpl implements DureeService {
     private static List<Duree> dureeList = new ArrayList<>();
     private static final MotifService motifService = new MotifServiceImpl();
     private static final TauxService tauxService = new TauxServiceImpl();
+    private static final CalculTaux calculTaux = new CalculTaux();
 
     @Override
     public Duree ajouterDuree(int dureeEnMois) {
@@ -19,7 +21,7 @@ public class DureeServiceImpl implements DureeService {
         dureeList.add(duree);
         if (motifService.getMotifListLenght() > 0){
             motifService.recupererMotifs().forEach(
-                motif -> tauxService.ajouterTaux(motif.getCoefficient(),motif.getId(),duree.getId())
+                motif -> tauxService.ajouterTaux(calculTaux.getCalculTaux(motif.getCoefficient(),duree.getDureeEnMois()),motif.getId(),duree.getId())
             );
         }
         return duree;

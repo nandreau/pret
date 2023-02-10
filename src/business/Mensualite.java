@@ -6,14 +6,14 @@ public class Mensualite {
     private LocalDate datePrelevement;
     private double partInteretsRembourses;
     private double partCapitalRembourse;
-    private Pret pret;
+    private long idPret;
 
-    public Mensualite(LocalDate datePrelevement, double partInteretsRembourses, double partCapitalRembourse, Pret pret) {
+    public Mensualite(LocalDate datePrelevement, double partInteretsRembourses, double partCapitalRembourse, long idPret) {
         this.id = ++compteur;
         this.datePrelevement = datePrelevement;
         this.partInteretsRembourses = partInteretsRembourses;
         this.partCapitalRembourse = partCapitalRembourse;
-        this.pret = pret;
+        this.idPret = idPret;
     }
 
     public long getId() {
@@ -48,11 +48,11 @@ public class Mensualite {
         this.partCapitalRembourse = partCapitalRembourse;
     }
 
-    public Pret getPret() {
-        return pret;
+    public long getIdPret() {
+        return idPret;
     }
 
-    public void setPret(Pret pret) {
-        this.pret = pret;
+    public void setIdPret(long idPret) {
+        this.idPret = idPret;
     }
 }

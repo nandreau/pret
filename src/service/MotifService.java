@@ -10,7 +10,5 @@ public interface MotifService {
 
     int getMotifListLenght();
 
-    double getCoefficient(long id);
-
     String getNom(long id);
 }

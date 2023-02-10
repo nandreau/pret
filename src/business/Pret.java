@@ -11,20 +11,18 @@ public class Pret {
     private LocalDateTime dateSouscription;
     private LocalDate dateEffet;
     private String observations;
-    private Client client;
-    private Mensualite mensualite;
-    private Taux tauxInteret;
+    private long idClient;
+    private long idTaux;
 
-    public Pret(Double montantDemande, Double montantMensualite, LocalDateTime dateSouscription, LocalDate dateEffet, String observations, Client client, Mensualite mensualite, Taux tauxInteret) {
+    public Pret(Double montantDemande, Double montantMensualite, LocalDateTime dateSouscription, LocalDate dateEffet, String observations, long idClient, long idTaux) {
         this.id = ++compteur;
         this.montantDemande = montantDemande;
         this.montantMensualite = montantMensualite;
         this.dateSouscription = dateSouscription;
         this.dateEffet = dateEffet;
         this.observations = observations;
-        this.client = client;
-        this.mensualite = mensualite;
-        this.tauxInteret = tauxInteret;
+        this.idClient = idClient;
+        this.idTaux = idTaux;
     }
 
     public Long getId() {
@@ -75,27 +73,19 @@ public class Pret {
         this.observations = observations;
     }
 
-    public Client getClient() {
-        return client;
+    public long getIdClient() {
+        return idClient;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setIdClient(long idClient) {
+        this.idClient = idClient;
     }
 
-    public Mensualite getMensualite() {
-        return mensualite;
+    public long getTauxInteret() {
+        return idTaux;
     }
 
-    public void setMensualite(Mensualite mensualite) {
-        this.mensualite = mensualite;
-    }
-
-    public Taux getTauxInteret() {
-        return tauxInteret;
-    }
-
-    public void setTauxInteret(Taux tauxInteret) {
-        this.tauxInteret = tauxInteret;
+    public void setTauxInteret(long idTaux) {
+        this.idTaux = idTaux;
     }
 }
